@@ -1,7 +1,7 @@
 import std/unittest, ptrarith, bitgen
 
 suite "ptrarith.nim":
-    test "Basic ptr arithmetic":
+    test "Basic pointer arithmetic":
         var v: array[5, int] = [1, 2, 3, 4, 5]
         var p: ptr int = v[0].addr
         check 1 == p[]
@@ -33,6 +33,55 @@ suite "ptrarith.nim":
 
         for (i, n) in p.pairs v.len:
             check v[i] == n
+
+        p = v[0].addr
+        check p[] == 2 ; inc p
+        check p[] == 3 ; inc p
+        check p[] == 4 ; inc p
+        check p[] == 12; inc p
+        check p[] == 6
+
+        check p[] == 6 ; dec p
+        check p[] == 12; dec p
+        check p[] == 4 ; dec p
+        check p[] == 3 ; dec p
+        check p[] == 2
+
+    test "Generic pointer":
+        var v: array[5, int8] = [-4, -2, 0, 2, 4]
+        var p: pointer = v[0].addr
+        check -4 == cast[ptr int8](p)[]; inc p
+        check -2 == cast[ptr int8](p)[]; inc p
+        check  0 == cast[ptr int8](p)[]; inc p
+        check  2 == cast[ptr int8](p)[]; inc p
+        check  4 == cast[ptr int8](p)[]
+
+        p = v[0].addr + 3
+        check 2 == cast[ptr int8](p)[]
+        p += 1
+        check 4 == cast[ptr int8](p)[]
+
+        p = v[0].addr
+        check p[0] == cast[byte](v[0])
+        check p[1] == cast[byte](v[1])
+        check p[2] == cast[byte](v[2])
+        check p[3] == cast[byte](v[3])
+        check p[4] == cast[byte](v[4])
+
+        p = v[^1].addr
+        check p[^0] == cast[byte](v[4])
+        check p[^1] == cast[byte](v[3])
+        check p[^2] == cast[byte](v[2])
+        check p[^3] == cast[byte](v[1])
+        check p[^4] == cast[byte](v[0])
+
+        p = v[0].addr
+        for i in 0..<v.len:
+            inc p[i]
+        check v == [-3'i8, -1, 1, 3, 5]
+        for i in 0..<v.len:
+            p[i] -= 3
+        check v == [-6'i8, -4, -2, 0, 2]
 
 # This must be at top-level for symbol export
 type Mask = distinct uint32
