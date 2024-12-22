@@ -18,7 +18,7 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 
-# 0.1 (22/12/24)
+# Version 0.1 (22/12/24)
 
 {.push inline.}
 
